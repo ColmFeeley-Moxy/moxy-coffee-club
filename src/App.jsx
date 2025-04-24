@@ -41,7 +41,7 @@ export default function CoffeeClubApp() {
     if (!name || !email || !hotel) return alert('Please complete all fields.');
 
     try {
-      const response = await fetch('https://your-api-gateway-url/register', {
+      const response = await fetch('https://8jgo0it3vc.execute-api.eu-north-1.amazonaws.com/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, name, email, hotel })
