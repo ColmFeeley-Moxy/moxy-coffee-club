@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from './components/ui/button';
 import { Card, CardContent } from './components/ui/card';
 
@@ -14,23 +14,11 @@ export default function CoffeeClubApp() {
   const [error, setError] = useState('');
 
   const hotels = [
-    'Moxy Aberdeen Airport',
-    'Moxy Edinburgh Airport',
-    'Moxy Edinburgh Fountainbridge',
-    'Moxy Glasgow Merchant City',
-    'Moxy Glasgow SEC',
-    'Moxy York',
-    'Moxy Chester',
-    'Moxy Birmingham NEC',
-    'Moxy Milton Keynes',
-    'Moxy Bristol',
-    'Moxy London Heathrow Airport',
-    'Moxy London Stratford',
-    'Moxy London ExCel',
-    'Moxy Plymouth',
-    'Moxy Southampton',
-    'Moxy Manchester City',
-    'Moxy Slough'
+    'Moxy Aberdeen Airport', 'Moxy Edinburgh Airport', 'Moxy Edinburgh Fountainbridge',
+    'Moxy Glasgow Merchant City', 'Moxy Glasgow SEC', 'Moxy York', 'Moxy Chester',
+    'Moxy Birmingham NEC', 'Moxy Milton Keynes', 'Moxy Bristol', 'Moxy London Heathrow Airport',
+    'Moxy London Stratford', 'Moxy London ExCel', 'Moxy Plymouth', 'Moxy Southampton',
+    'Moxy Manchester City', 'Moxy Slough'
   ];
 
   const handleSubmit = async (e) => {
@@ -58,43 +46,74 @@ export default function CoffeeClubApp() {
     }
   };
 
-  if (submitted) {
-    return (
-      <Card className="max-w-md mx-auto mt-10 text-center">
-        <CardContent>
-          <h2 className="text-xl font-bold mb-4">Thanks for registering!</h2>
-          <p className="mb-4">Please check your email to confirm your membership.</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
-    <Card className="max-w-md mx-auto mt-10 text-center">
-      <CardContent>
-        <h2 className="text-xl font-bold mb-4">Register for Moxy Coffee Club</h2>
-        <form onSubmit={handleSubmit} className="space-y-4 text-left">
-          <div>
-            <label className="block mb-1 font-semibold">Your Name</label>
-            <input type="text" className="w-full p-2 border rounded" value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div>
-            <label className="block mb-1 font-semibold">Email Address</label>
-            <input type="email" className="w-full p-2 border rounded" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-          <div>
-            <label className="block mb-1 font-semibold">Hotel</label>
-            <select className="w-full p-2 border rounded" value={hotel} onChange={(e) => setHotel(e.target.value)}>
-              <option value="">Select your hotel</option>
-              {hotels.map((h) => (
-                <option key={h} value={h}>{h}</option>
-              ))}
-            </select>
-          </div>
-          {error && <p className="text-red-600 text-sm">{error}</p>}
-          <Button type="submit">Register</Button>
-        </form>
-      </CardContent>
-    </Card>
+    <div style={{
+      backgroundColor: '#e8e1d9',
+      color: '#000000',
+      fontFamily: "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      textAlign: 'center',
+      padding: '2rem'
+    }}>
+      <img
+        src="/moxy-logo.svg"
+        alt="Moxy Coffee Club"
+        style={{ height: '64px', marginBottom: '2rem' }}
+      />
+
+      {submitted ? (
+        <Card className="max-w-md w-full text-center shadow-lg">
+          <CardContent>
+            <h2 className="text-xl font-bold mb-4">Thanks for registering!</h2>
+            <p className="mb-4">Please check your email to confirm your membership.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="max-w-md w-full text-left shadow-lg">
+          <CardContent>
+            <h2 className="text-xl font-bold mb-4 text-center">Register for Moxy Coffee Club</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block mb-1 font-semibold">Your Name</label>
+                <input
+                  type="text"
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block mb-1 font-semibold">Email Address</label>
+                <input
+                  type="email"
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block mb-1 font-semibold">Hotel</label>
+                <select
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={hotel}
+                  onChange={(e) => setHotel(e.target.value)}
+                >
+                  <option value="">Select your hotel</option>
+                  {hotels.map(h => (
+                    <option key={h} value={h}>{h}</option>
+                  ))}
+                </select>
+              </div>
+              {error && <p className="text-red-600 text-sm">{error}</p>}
+              <Button type="submit">Register</Button>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 }
