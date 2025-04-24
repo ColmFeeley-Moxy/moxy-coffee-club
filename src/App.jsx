@@ -2,35 +2,61 @@ import { useState, useEffect } from 'react';
 import { Button } from './components/ui/button';
 import { Card, CardContent } from './components/ui/card';
 
+const hotelList = [
+  "Moxy Aberdeen Airport",
+  "Moxy Edinburgh Airport",
+  "Moxy Edinburgh Fountainbridge",
+  "Moxy Glasgow Merchant City",
+  "Moxy Glasgow SEC",
+  "Moxy York",
+  "Moxy Chester",
+  "Moxy Birmingham NEC",
+  "Moxy Milton Keynes",
+  "Moxy Bristol",
+  "Moxy London Heathrow Airport",
+  "Moxy London Stratford",
+  "Moxy London ExCel",
+  "Moxy Plymouth",
+  "Moxy Southampton",
+  "Moxy Manchester City",
+  "Moxy Slough"
+];
+
 export default function CoffeeClubApp() {
-  const [hasRedeemedToday, setHasRedeemedToday] = useState(false);
-  const [lastRedemption, setLastRedemption] = useState(null);
-  const [registered, setRegistered] = useState(false);
+  const [code, setCode] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [hotel, setHotel] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    const storedRedemption = localStorage.getItem('lastRedemption');
-    if (storedRedemption) {
-      const redemptionDate = new Date(storedRedemption);
-      const now = new Date();
-      const isSameDay = redemptionDate.toDateString() === now.toDateString();
-      setHasRedeemedToday(isSameDay);
-      setLastRedemption(redemptionDate);
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeFromURL = urlParams.get('code');
+    if (codeFromURL) {
+      setCode(codeFromURL);
     }
-
-    const isRegistered = localStorage.getItem('registered') === 'true';
-    setRegistered(isRegistered);
   }, []);
 
-  const handleRedeem = () => {
-    const now = new Date();
-    localStorage.setItem('lastRedemption', now.toISOString());
-    setHasRedeemedToday(true);
-    setLastRedemption(now);
-  };
+  const handleSubmit = async () => {
+    if (!name || !email || !hotel) return alert('Please complete all fields.');
 
-  const handleRegister = () => {
-    localStorage.setItem('registered', 'true');
-    setRegistered(true);
+    try {
+      const response = await fetch('https://your-api-gateway-url/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, name, email, hotel })
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        setSubmitted(true);
+      } else {
+        alert('There was an error: ' + result.error);
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Submission failed.');
+    }
   };
 
   return (
@@ -49,26 +75,40 @@ export default function CoffeeClubApp() {
             alt="Moxy Coffee Club"
             className="mx-auto mb-6 h-16"
           />
-          {!registered ? (
+          {submitted ? (
             <>
-              <h2 className="text-xl font-bold mb-4">Join Moxy Coffee Club</h2>
-              <p className="mb-4">Scan your Moxy Ocean Bottle code to activate membership.</p>
-              <Button onClick={handleRegister}>Simulate Registration</Button>
+              <h2 className="text-xl font-bold mb-4">You're almost in!</h2>
+              <p>Please check your inbox to verify your email address.</p>
             </>
           ) : (
             <>
-              <h2 className="text-xl font-bold mb-4">Moxy Coffee Club</h2>
-              {hasRedeemedToday ? (
-                <>
-                  <p className="mb-4">You've redeemed your free coffee today!</p>
-                  <p className="text-sm">Last redemption: {lastRedemption?.toLocaleString()}</p>
-                </>
-              ) : (
-                <>
-                  <p className="mb-4">You haven't redeemed your coffee yet today.</p>
-                  <Button onClick={handleRedeem}>Redeem Free Coffee</Button>
-                </>
-              )}
+              <h2 className="text-xl font-bold mb-4">Register Your Bottle</h2>
+              <p className="mb-2 text-sm">Code: <strong>{code}</strong></p>
+              <input
+                type="text"
+                placeholder="Full name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="border border-gray-300 p-2 rounded w-full mb-4"
+              />
+              <input
+                type="email"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="border border-gray-300 p-2 rounded w-full mb-4"
+              />
+              <select
+                value={hotel}
+                onChange={(e) => setHotel(e.target.value)}
+                className="border border-gray-300 p-2 rounded w-full mb-4"
+              >
+                <option value="">Select your hotel</option>
+                {hotelList.map(hotel => (
+                  <option key={hotel} value={hotel}>{hotel}</option>
+                ))}
+              </select>
+              <Button onClick={handleSubmit}>Submit Registration</Button>
             </>
           )}
         </CardContent>
